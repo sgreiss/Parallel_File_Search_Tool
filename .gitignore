@@ -26,5 +26,5 @@ target
 /target
 
 
-# Test file for testing the file search tool.
-src/testfile.txt
+# Test directory for use in search tool
+test
