@@ -91,11 +91,14 @@ fn main() {
 
     let num_threads = num_cpus::get();
     let files_searched = Arc::new(AtomicUsize::new(0));
+    let cases_found = Arc::new(AtomicUsize::new(0));
 
     for _ in 0..num_threads {
         let path_receiver = Arc::clone(&path_receiver);
         let result_sender = result_sender.clone();
+
         let files_searched = Arc::clone(&files_searched);
+        let cases_found = Arc::clone(&cases_found);
         let text = text.clone();
         let flag = flag.clone();
 
@@ -111,6 +114,7 @@ fn main() {
                         let found = search_file(&path, &text, &flag);
                         files_searched.fetch_add(1, Ordering::Relaxed);
                         if found {
+                            cases_found.fetch_add(1, Ordering::Relaxed);
                             result_sender.send(found).unwrap();
                         }
                     }
@@ -147,8 +151,9 @@ fn main() {
 
     let multi_duration = multi_start_time.elapsed();
     println!(
-        "Multi-threaded search completed in {} seconds with {} files searched.",
+        "Multi-threaded search completed in {} seconds with {} files searched and {} cases found.",
         color_str(&format!("{:.3}", multi_duration.as_secs_f64()), COLORS[4]),
-        color_str(&files_searched.load(Ordering::Relaxed).to_string(), COLORS[2])
+        color_str(&files_searched.load(Ordering::Relaxed).to_string(), COLORS[2]),
+        color_str(&cases_found.load(Ordering::Relaxed).to_string(), COLORS[3])
     );
 }
