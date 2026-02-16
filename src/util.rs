@@ -23,10 +23,7 @@ pub fn color_str(text: &str, color: Color) -> String {
 
 /// Highlight specific substring in a line with a given color.
 pub fn highlight_text(line: &str, text: &str, color: Color) -> String {
-    line.replace(
-        text,
-        color_str(text, color).as_str(),
-    )
+    line.replace(text, color_str(text, color).as_str())
 }
 
 /// A list of colors to use for highlighting found text.
